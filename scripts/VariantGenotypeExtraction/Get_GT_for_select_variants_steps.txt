@@ -1,0 +1,10 @@
+1. Get plink input file for all varIDs of interest. Your file should have the varID in column one and reference allele in column 2 (tab sep).
+./make_varID_files_for_plink_input.sh -f a2_allele_plink_input_measuredAlleleIncluded_AFR_Emory_sazonov_sig_var.lst
+mv *.txt AFR_varID_files/
+
+2. Run plink to get GT of each individual for each variant of interest.
+cd AFR_varID_files/
+ls *.txt | xargs -I {} -P 4 plink --bfile ~/african_american_WGS_GENESIS/big_daly_v3 --extract {} --a2-allele {} --recode --out AFR_GT_{}
+
+3. Merge GT to one file. Annotate het, hom_ref, or hom_alt. Annotate case/control.
+python3 AFREmory_merge_GT_data.py -d AFR_varID_files/ -v ../sazonov/AFR_Emory_sazonov_sig_var.lst
